@@ -5,7 +5,10 @@
     <li>
       Title: <%= link.title %>
       URL:   <%= link.url %>
-      Tags:  <%= link.tags.map(&:name)%>
+      <% if link.tags.empty? == false %>
+        Tags:  <%= link.tags.map(&:name) %>
+      <% else %>
+      <% end %>
     </li>
   <% end %>
 </ul>
