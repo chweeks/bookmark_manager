@@ -34,6 +34,10 @@ class App < Sinatra::Base
     erb :'links/index'
   end
 
+  get '/users/new' do
+    erb :'users/new'
+  end
+
   set :views, proc { File.join(root, '../views') }
   run! if app_file == $0
 
