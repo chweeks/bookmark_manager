@@ -7,6 +7,8 @@ gem 'data_mapper'
 gem 'database_cleaner'
 gem 'dm-postgres-adapter'
 gem 'sinatra'
+gem 'dm-validations'
+gem 'sinatra-flash'
 
 group :test do
   gem 'capybara'
