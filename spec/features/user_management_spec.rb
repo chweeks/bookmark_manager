@@ -38,3 +38,20 @@ feature 'User sign up' do
     expect(page).to have_content('Email is already taken')
   end
 end
+
+feature 'User sign in' do
+
+  let(:user){ create :user }
+
+  def sign_in(email:, password:)
+    visit 'sessions/new'
+    fill_in :email, with: email
+    fill_in :password, with: password
+    click_button 'Sign In'
+  end
+
+  scenario 'with correct credentials' do
+    sign_in(email: user.email, password: user.password)
+    expect(page).to have_content "Welcome, #{user.email}"
+  end
+end
