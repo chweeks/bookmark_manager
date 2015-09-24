@@ -1,7 +1,11 @@
 require 'capybara/rspec'
+
+ENV["RACK_ENV"] = 'test'
+
+require 'database_cleaner'
 require './app/data_mapper_setup.rb'
 require './app/app'
-require 'database_cleaner'
+
 Capybara.app = App
 
 RSpec.configure do |config|
