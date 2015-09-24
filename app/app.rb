@@ -3,7 +3,9 @@ require_relative 'data_mapper_setup'
 require_relative 'helpers'
 require 'sinatra/flash'
 
-class App < Sinatra::Base
+class BookmarkManager < Sinatra::Base
+
+  use Rack::MethodOverride
 
   include Helpers
 
@@ -67,6 +69,7 @@ class App < Sinatra::Base
 
   post '/sessions' do
     user = User.authenticate(params[:email], params[:password])
+    self.delete if params[:_method] == 'delete'
     if user
       session[:user_id] = user.id
       redirect to('/links')
@@ -76,6 +79,6 @@ class App < Sinatra::Base
     end
   end
 
-  run! if app_file == App
+  run! if app_file == BookmarkManager
 
 end

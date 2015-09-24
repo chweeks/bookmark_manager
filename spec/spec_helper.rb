@@ -7,8 +7,9 @@ require './app/data_mapper_setup.rb'
 require './app/app'
 require 'factory_girl'
 require 'factories/users.rb'
+require_relative 'helpers/session'
 
-Capybara.app = App
+Capybara.app = BookmarkManager
 
 RSpec.configure do |config|
 
@@ -26,6 +27,8 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+  config.include SessionHelpers
 
   config.include FactoryGirl::Syntax::Methods
 end
