@@ -69,7 +69,6 @@ class BookmarkManager < Sinatra::Base
 
   post '/sessions' do
     user = User.authenticate(params[:email], params[:password])
-    self.delete if params[:_method] == 'delete'
     if user
       session[:user_id] = user.id
       redirect to('/links')
@@ -77,6 +76,12 @@ class BookmarkManager < Sinatra::Base
       flash.now[:errors] = ['The email or password is incorrect']
       erb :'sessions/new'
     end
+  end
+
+  delete '/sessions' do
+    session[:user_id] = nil
+    flash.next[:notice] = 'goodbye!'
+    redirect to('/sessions/new')
   end
 
   run! if app_file == BookmarkManager
