@@ -1,89 +1,36 @@
 require 'sinatra/base'
+require 'sinatra/flash'
+require 'sinatra/partial'
 require_relative 'data_mapper_setup'
 require_relative 'helpers'
-require 'sinatra/flash'
+require_relative 'controllers/links'
+require_relative 'controllers/users'
+require_relative 'controllers/sessions'
+require_relative 'models/link'
+require_relative 'models/user'
+require_relative 'models/tag'
 
-class BookmarkManager < Sinatra::Base
+module Bookmark
+  class BookmarkManager < Sinatra::Base
 
-  use Rack::MethodOverride
+    include Helpers
 
-  include Helpers
+    use Rack::MethodOverride
+    register Sinatra::Flash
+    register Sinatra::Partial
 
-  enable :sessions
-  register Sinatra::Flash
+    use Routes::Link
+    use Routes::User
+    use Routes::Session
+    use Models::Link
+    use Models::User
+    use Models::Tag
 
-  set :session_secret, 'super secret'
+    enable :sessions
 
-  get '/' do
-   redirect '/links'
+    set :session_secret, 'super secret'
+
+    run! if app_file == BookmarkManager
+
   end
-
-  get '/links' do
-    @links = Link.all
-    erb :'links/index'
-  end
-
-  get '/links/new' do
-    erb :'links/new'
-  end
-
-  post '/links' do
-    link = Link.new(url: params[:url],
-                    title: params[:title])
-    tags = params[:tags].split(" ")
-    tags.each do |tag|
-      new_tag = Tag.create(name: tag)
-      link.tags << new_tag
-    end
-    link.save
-    redirect '/links'
-  end
-
-  get '/tags/:name' do
-    tags = Tag.first(name: params[:name])
-    @links = tags ? tags.links : []
-    erb :'links/index'
-  end
-
-  get '/users/new' do
-    @user = User.new
-    erb :'users/new'
-  end
-
-  post '/users' do
-    @user = User.create(email: params[:email],
-                       password: params[:password],
-                       password_confirmation: params[:password_confirmation])
-    if @user.save
-      session[:user_id] = @user.id
-      redirect to('/links')
-    else
-      flash.now[:errors] = @user.errors.full_messages
-      erb :'users/new'
-    end
-  end
-
-  get '/sessions/new' do
-    erb :'sessions/new'
-  end
-
-  post '/sessions' do
-    user = User.authenticate(params[:email], params[:password])
-    if user
-      session[:user_id] = user.id
-      redirect to('/links')
-    else
-      flash.now[:errors] = ['The email or password is incorrect']
-      erb :'sessions/new'
-    end
-  end
-
-  delete '/sessions' do
-    session[:user_id] = nil
-    flash.next[:notice] = 'goodbye!'
-    redirect to('/sessions/new')
-  end
-
-  run! if app_file == BookmarkManager
-
 end

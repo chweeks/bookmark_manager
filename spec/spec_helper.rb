@@ -3,13 +3,12 @@ require 'capybara/rspec'
 ENV["RACK_ENV"] = 'test'
 
 require 'database_cleaner'
-require './app/data_mapper_setup.rb'
 require './app/app'
 require 'factory_girl'
 require 'factories/users.rb'
 require_relative 'helpers/session'
 
-Capybara.app = BookmarkManager
+Capybara.app = Bookmark::BookmarkManager
 
 RSpec.configure do |config|
 

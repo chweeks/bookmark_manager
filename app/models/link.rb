@@ -1,13 +1,17 @@
 require_relative '../data_mapper_setup'
 
-class Link
+module Bookmark
+  module Models
+    class Link
 
-  include DataMapper::Resource
+      include DataMapper::Resource
 
-  property :id,    Serial
-  property :title, String
-  property :url,   String
+      property :id,    Serial
+      property :title, String
+      property :url,   String
 
-  has n,   :tags, through: Resource
+      has n,   :tags, through: Resource
 
+    end
+  end
 end
